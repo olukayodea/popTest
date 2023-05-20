@@ -120,7 +120,12 @@
                             ),
                             true
                         );
-                        if ($insert) {
+                        if ($insert == "-1") {
+                            $result = array(
+                                "success" => false,
+                                "message" => "run the setup script in <a href='setup.php' target='_blank'>Setup</a>"
+                            );
+                        } else if ($insert) {
                             $data = $this->getOne("users", $this->email, "email");
 
                             unset($data['password']);
