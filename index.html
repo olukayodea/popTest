@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card" id="notLoggedIn">
+                    <div class="card-header">
+                        <h3 class="text-center">Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger errorDialogue" role="alert" style="display: none;">
+                            <span class="errorMessage"></span>
+                        </div>
+                        <div class="alert alert-success successDialogue" role="alert" style="display: none;">
+                            <span class="successMessage"></span>
+                        </div>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" name="email" class="form-control" id="email"
+                                    placeholder="Enter your email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password"
+                                    placeholder="Enter your password">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="submit" class="btn btn-primary">Login</button>
+                            </div>
+                            <a href="Javascript:void(0)" id="signup">Sign Up</a>
+                        </form>
+                    </div>
+                </div>
+                <div class="card" id="loggedIn" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="text-center">Welcome</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                First Name
+                            </div>
+                            <div class="col-8">
+                                <span id="firstname"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                Last Name
+                            </div>
+                            <div class="col-8">
+                                <span id="lastname"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                E-Mail
+                            </div>
+                            <div class="col-8">
+                                <span id="emailAddress"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                Created
+                            </div>
+                            <div class="col-8">
+                                <span id="create_time"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                Login
+                            </div>
+                            <div class="col-8">
+                                <span id="login_time"></span>
+                            </div>
+                        </div>
+                        <a id="logout" href="Javascript:void(0)">Logout</a>
+                    </div>
+                </div>
+                <div class="card" id="signUpDiv" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="text-center">Sign Up</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger errorDialogue" role="alert" style="display: none;">
+                            <span class="errorMessage"></span>
+                        </div>
+                        <div class="alert alert-success successDialogue" role="alert" style="display: none;">
+                            <span class="successMessage"></span>
+                        </div>
+                        <form id="signUpForm">
+                            <div class="mb-3">
+                                <label for="firstname" class="form-label">First Name</label>
+                                <input type="text" name="firstname" class="form-control" id="firstname"
+                                    placeholder="Enter your First Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastname" class="form-label">Last Name</label>
+                                <input type="lastname" name="lastname" class="form-control" id="lastname"
+                                    placeholder="Enter your Last Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" name="email" class="form-control" id="s_email"
+                                    placeholder="Enter your email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="s_password"
+                                    placeholder="Enter your password">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="s_submit" class="btn btn-primary">Sign Up</button>
+                            </div>
+                            <a href="Javascript:void(0)" id="login">Login</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            checkLogin();
+
+            $('#signup').click(function () {
+                // reset all messages
+                $('.successDialogue').hide();
+                $(".successMessage").html('');
+                $('.errorDialogue').hide();
+                $(".errorMessage").html('');
+
+                // display approprate DIV
+                $('#loggedIn').hide();
+                $('#signUpDiv').show();
+                $('#notLoggedIn').hide();
+            });
+
+            $('#login').click(function () {
+                // reset all messages
+                $('.successDialogue').hide();
+                $(".successMessage").html('');
+                $('.errorDialogue').hide();
+                $(".errorMessage").html('');
+
+                // display approprate DIV
+                $('#loggedIn').hide();
+                $('#signUpDiv').hide();
+                $('#notLoggedIn').show();
+            });
+
+            $('#logout').click(function () {
+                // reset all messages
+                $('.successDialogue').hide();
+                $(".successMessage").html('');
+                $('.errorDialogue').hide();
+                $(".errorMessage").html('');
+
+                $.get('scripts/logout.php', function (response) {
+                    // Handle the response from the server
+                    console.log(response);
+                    var parsedData = $.parseJSON(response);
+                    if (parsedData.success === true) {
+                        $('.successDialogue').show();
+                        $(".successMessage").html(parsedData.message);
+
+                        $('#loggedIn').hide();
+                        $('#signUpDiv').hide();
+                        $('#notLoggedIn').show();
+                    } else {
+                        // display error
+                        $('.errorDialogue').show();
+                        $(".errorMessage").html("Cannot log out at this time");
+                    }
+                });
+            });
+
+            $('#loginForm').submit(function (event) {
+                // Prevent the form from submitting normally
+                event.preventDefault();
+                // reset all messages
+                $('.successDialogue').hide();
+                $(".successMessage").html('');
+                $('.errorDialogue').hide();
+                $(".errorMessage").html('');
+
+                // disable buttons
+                $('#submit').prop('disabled', true);
+                $("#submit").html('Logging In...');
+                // Get the form data
+                var formData = $(this).serialize();
+
+                // Send the form data to the server
+                $.post('scripts/login.php', formData, function (response) {
+                    // Handle the response from the server
+                    console.log(response);
+                    var parsedData = $.parseJSON(response);
+
+                    if (parsedData.success === true) {
+                        // Reset the form
+                        $('#loginForm')[0].reset();
+
+                        // Display the retrieved data
+                        $("#firstname").html(parsedData.data.firstname);
+                        $("#lastname").html(parsedData.data.lastname);
+                        $("#emailAddress").html(parsedData.data.email);
+                        $("#create_time").html(parsedData.data.create_time);
+                        $("#login_time").html(parsedData.data.login_time);
+
+                        // SHow the data div and hide the login DIV
+                        $('#loggedIn').show();
+                        $('#signUpDiv').hide();
+                        $('#notLoggedIn').hide();
+
+                    } else {
+                        // display error
+                        $('.errorDialogue').show();
+                        $(".errorMessage").html(parsedData.message);
+                    }
+                });
+
+                // activate login button
+                $('#submit').prop('disabled', false);
+                $("#submit").html('Login');
+            });
+
+            $('#signUpForm').submit(function (event) {
+                // Prevent the form from submitting normally
+                event.preventDefault();
+                // reset all messages
+                $('.successDialogue').hide();
+                $(".successMessage").html('');
+                $('.errorDialogue').hide();
+                $(".errorMessage").html('');
+
+                // disable buttons
+                $('#s_submit').prop('disabled', true);
+                $("#s_submit").html('Signing Up...');
+                // Get the form data
+                var formData = $(this).serialize();
+
+                // Send the form data to the server
+                $.post('scripts/signup.php', formData, function (response) {
+                    // Handle the response from the server
+                    console.log(response);
+                    var parsedData = $.parseJSON(response);
+
+                    if (parsedData.success === true) {
+                        // Reset the form
+                        $('#signUpForm')[0].reset();
+
+                        // Display the retrieved data
+                        $("#firstname").html(parsedData.data.firstname);
+                        $("#lastname").html(parsedData.data.lastname);
+                        $("#emailAddress").html(parsedData.data.email);
+                        $("#create_time").html(parsedData.data.create_time);
+                        $("#login_time").html(parsedData.data.login_time);
+
+                        // SHow the data div and hide the login DIV
+                        $('#loggedIn').show();
+                        $('#signUpDiv').hide();
+                        $('#notLoggedIn').hide();
+
+                    } else {
+                        // display error
+                        $('.errorDialogue').show();
+                        $(".errorMessage").html(parsedData.message);
+                    }
+                });
+
+                // activate login button
+                $('#s_submit').prop('disabled', false);
+                $("#s_submit").html('Sign Up');
+            });
+        });
+
+        function checkLogin() {
+            $.get('scripts/checkSession.php', function (response) {
+
+                console.log(response);
+                var parsedData = $.parseJSON(response);
+                if (parsedData.success === true) {
+                    // Reset the form
+                    $('#loginForm')[0].reset();
+
+                    $("#firstname").html(parsedData.data.firstname);
+                    $("#lastname").html(parsedData.data.lastname);
+                    $("#emailAddress").html(parsedData.data.email);
+                    $("#create_time").html(parsedData.data.create_time);
+                    $("#login_time").html(parsedData.data.login_time);
+
+                    $('#loggedIn').show();
+                    $('#signUpDiv').hide();
+                    $('#notLoggedIn').hide();
+
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
